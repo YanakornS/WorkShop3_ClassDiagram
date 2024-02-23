@@ -1,130 +1,122 @@
-class Order {
-  constructor(id, customer, items) {
-    this.id = id;
-    this.customer = customer;
-    this.items = items;
-  }
-
-  getId() {
-    return this.id;
-  }
-
-  getCustomer() {
-    return this.customer;
-  }
-
-  setCustomer(customer) {
-    this.customer = customer;
-  }
-
-  getItems() {
-    return this.items;
-  }
-
-  setItems(items) {
-    this.items = items;
-  }
-
-  getTotalPrice() {
-    let total = 0;
-    for (const item of this.items) {
-      total += item.getPrice() * item.getQuantity();
-    }
-    return total;
-  }
-
-  toString() {
-    return `Order[id=${
-      this.id
-    }, customer=${this.customer.toString()}, items=${this.items
-      .map((item) => item.toString())
-      .join(", ")}]`;
-  }
-}
-
 class Customer {
-  constructor(id, name, address) {
-    this.id = id;
-    this.name = name;
-    this.address = address;
-  }
+    constructor(name) {
+        this.name = name;
+        this.member = false;
+        this.memberType = null;
+    }
 
-  getId() {
-    return this.id;
-  }
+    getName() {
+        return this.name;
+    }
 
-  getName() {
-    return this.name;
-  }
+    isMember() {
+        return this.member;
+    }
 
-  setName(name) {
-    this.name = name;
-  }
+    setMember(member) {
+        this.member = member;
+    }
 
-  getAddress() {
-    return this.address;
-  }
+    getMemberType() {
+        return this.memberType;
+    }
 
-  setAddress(address) {
-    this.address = address;
-  }
+    setMemberType(type) {
+        this.memberType = type;
+    }
 
-  toString() {
-    return `Customer[id=${this.id}, name=${this.name}, address=${this.address}]`;
-  }
+    toString() {
+        return `Customer: ${this.name}, Member: ${this.member}, Member Type: ${this.memberType}`;
+    }
 }
 
-class Item {
-  constructor(id, name, price, quantity) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-    this.quantity = quantity;
-  }
+class Visit {
+    constructor(customer, date, serviceExpense, productExpense) {
+        this.customer = customer;
+        this.date = date;
+        this.serviceExpense = serviceExpense;
+        this.productExpense = productExpense;
+    }
 
-  getId() {
-    return this.id;
-  }
+    getName() {
+        return this.customer.getName();
+    }
 
-  getName() {
-    return this.name;
-  }
+    getServiceExpense() {
+        return this.serviceExpense;
+    }
 
-  setName(name) {
-    this.name = name;
-  }
+    setServiceExpense(expense) {
+        this.serviceExpense = expense;
+    }
 
-  getPrice() {
-    return this.price;
-  }
+    getProductExpense() {
+        return this.productExpense;
+    }
 
-  setPrice(price) {
-    this.price = price;
-  }
+    setProductExpense(expense) {
+        this.productExpense = expense;
+    }
 
-  getQuantity() {
-    return this.quantity;
-  }
+    getTotalExpense() {
+        return this.serviceExpense + this.productExpense;
+    }
 
-  setQuantity(quantity) {
-    this.quantity = quantity;
-  }
+    toString() {
+        return `Visit: ${this.customer.getName()}, Date: ${this.date}, Service Expense: ${this.serviceExpense}, Product Expense: ${this.productExpense}, Total Expense: ${this.getTotalExpense()}`;
+    }
+}
 
-  toString() {
-    return `Item[id=${this.id}, name=${this.name}, price=${this.price}, quantity=${this.quantity}]`;
-  }
+class DiscountRate {
+    static serviceDiscountPremium = 0.2;
+    static serviceDiscountGold = 0.15;
+    static serviceDiscountSilver = 0.1;
+    static productDiscountPremium = 0.1;
+    static productDiscountGold = 0.1;
+    static productDiscountSilver = 0.1;
+
+    static getServiceDiscountRate(type) {
+        switch (type) {
+            case "Premium":
+                return DiscountRate.serviceDiscountPremium;
+            case "Gold":
+                return DiscountRate.serviceDiscountGold;
+            case "Silver":
+                return DiscountRate.serviceDiscountSilver;
+            default:
+                return 0;
+        }
+    }
+
+    static getProductDiscountRate(type) {
+        switch (type) {
+            case "Premium":
+                return DiscountRate.productDiscountPremium;
+            case "Gold":
+                return DiscountRate.productDiscountGold;
+            case "Silver":
+                return DiscountRate.productDiscountSilver;
+            default:
+                return 0;
+        }
+    }
 }
 
 const main = () => {
-  const customer = new Customer(1, "John Doe", "123 Main Street");
-  const items = [
-    new Item(1, "Product 1", 100, 1),
-    new Item(2, "Product 2", 200, 2),
-  ];
-  const order = new Order(1, customer, items);
 
-  console.log(order.toString()); // "Order[id=1, customer=Customer[id=1, name=John Doe, address=123 Main Street], items=[Item[id=1, name=Product 1, price=100, quantity=1], Item[id=2, name=Product 2, price=200, quantity=2]]]"
+    const customer1 = new Customer("YanakornS");
+    customer1.setMember(true);
+    customer1.setMemberType("Premium");
 
-  console.log(order.getTotalPrice()); // 500
-};
+    const visit1 = new Visit(customer1, new Date(), 3000, 800);
+
+    console.log(customer1.toString());
+    console.log(visit1.toString());
+
+    const discountRate = DiscountRate.getServiceDiscountRate(customer1.getMemberType());
+    console.log(`Service discount rate: ${discountRate}`);
+
+
+
+}
 main();
