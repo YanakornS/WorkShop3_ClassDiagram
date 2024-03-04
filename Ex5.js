@@ -1,122 +1,139 @@
 class Customer {
-    constructor(name) {
-        this.name = name;
-        this.member = false;
-        this.memberType = null;
-    }
+  constructor(name) {
+    this.name = name;
+    this.member = false;
+    this.memberType = null;
+  }
 
-    getName() {
-        return this.name;
-    }
+  getName() {
+    return this.name;
+  }
 
-    isMember() {
-        return this.member;
-    }
+  isMember() {
+    return this.member;
+  }
 
-    setMember(member) {
-        this.member = member;
-    }
+  setMember(member) {
+    this.member = member;
+  }
 
-    getMemberType() {
-        return this.memberType;
-    }
+  getMemberType() {
+    return this.memberType;
+  }
 
-    setMemberType(type) {
-        this.memberType = type;
-    }
+  setMemberType(type) {
+    this.memberType = type;
+  }
 
-    toString() {
-        return `Customer: ${this.name}, Member: ${this.member}, Member Type: ${this.memberType}`;
-    }
+  toString() {
+    return `Customer: ${this.name}, Member: ${this.member}, Member Type: ${this.memberType}`;
+  }
 }
 
 class Visit {
-    constructor(customer, date, serviceExpense, productExpense) {
-        this.customer = customer;
-        this.date = date;
-        this.serviceExpense = serviceExpense;
-        this.productExpense = productExpense;
-    }
+  constructor(customer, date, serviceExpense, productExpense) {
+    this.customer = customer;
+    this.date = date;
+    this.serviceExpense = serviceExpense;
+    this.productExpense = productExpense;
+  }
 
-    getName() {
-        return this.customer.getName();
-    }
+  getName() {
+    return this.customer.getName();
+  }
 
-    getServiceExpense() {
-        return this.serviceExpense;
-    }
+  getServiceExpense() {
+    return this.serviceExpense;
+  }
 
-    setServiceExpense(expense) {
-        this.serviceExpense = expense;
-    }
+  setServiceExpense(expense) {
+    this.serviceExpense = expense;
+  }
 
-    getProductExpense() {
-        return this.productExpense;
-    }
+  getProductExpense() {
+    return this.productExpense;
+  }
 
-    setProductExpense(expense) {
-        this.productExpense = expense;
-    }
+  setProductExpense(expense) {
+    this.productExpense = expense;
+  }
 
-    getTotalExpense() {
-        return this.serviceExpense + this.productExpense;
-    }
+  getTotalExpense() {
+    const serviceDiscountRate = DiscountRate.getServiceDiscountRate(
+        this.customer.getMemberType()
+      );
+      const productDiscountRate = DiscountRate.getProductDiscountRate(
+        this.customer.getMemberType()
+      );
+  
+      const discountService = this.serviceExpense * serviceDiscountRate;
+      const discountProduct = this.productExpense * productDiscountRate;
+  
+      const totalDiscount = discountService + discountProduct;
+      const totalExpense = this.serviceExpense + this.productExpense - totalDiscount;
+  
+      return totalExpense;
+  }
 
-    toString() {
-        return `Visit: ${this.customer.getName()}, Date: ${this.date}, Service Expense: ${this.serviceExpense}, Product Expense: ${this.productExpense}, Total Expense: ${this.getTotalExpense()}`;
-    }
+  toString() {
+    return `Visit: ${this.customer.getName()}, Date: ${
+      this.date
+    }, Service Expense: ${this.serviceExpense}, Product Expense: ${
+      this.productExpense
+    }, Total Expense: ${this.getTotalExpense()}`;
+  }
 }
 
 class DiscountRate {
-    static serviceDiscountPremium = 0.2;
-    static serviceDiscountGold = 0.15;
-    static serviceDiscountSilver = 0.1;
-    static productDiscountPremium = 0.1;
-    static productDiscountGold = 0.1;
-    static productDiscountSilver = 0.1;
+  static serviceDiscountPremium = 0.2;
+  static serviceDiscountGold = 0.15;
+  static serviceDiscountSilver = 0.1;
+  static productDiscountPremium = 0.1;
+  static productDiscountGold = 0.1;
+  static productDiscountSilver = 0.1;
 
-    static getServiceDiscountRate(type) {
-        switch (type) {
-            case "Premium":
-                return DiscountRate.serviceDiscountPremium;
-            case "Gold":
-                return DiscountRate.serviceDiscountGold;
-            case "Silver":
-                return DiscountRate.serviceDiscountSilver;
-            default:
-                return 0;
-        }
+  static getServiceDiscountRate(type) {
+    switch (type) {
+      case "Premium":
+        return DiscountRate.serviceDiscountPremium;
+      case "Gold":
+        return DiscountRate.serviceDiscountGold;
+      case "Silver":
+        return DiscountRate.serviceDiscountSilver;
+      default:
+        return 0;
     }
+  }
 
-    static getProductDiscountRate(type) {
-        switch (type) {
-            case "Premium":
-                return DiscountRate.productDiscountPremium;
-            case "Gold":
-                return DiscountRate.productDiscountGold;
-            case "Silver":
-                return DiscountRate.productDiscountSilver;
-            default:
-                return 0;
-        }
+  static getProductDiscountRate(type) {
+    switch (type) {
+      case "Premium":
+        return DiscountRate.productDiscountPremium;
+      case "Gold":
+        return DiscountRate.productDiscountGold;
+      case "Silver":
+        return DiscountRate.productDiscountSilver;
+      default:
+        return 0;
     }
+  }
 }
 
 const main = () => {
+  const customer1 = new Customer("YanakornS");
+  customer1.setMember(true);
+  customer1.setMemberType("Premium");
 
-    const customer1 = new Customer("YanakornS");
-    customer1.setMember(true);
-    customer1.setMemberType("Premium");
+  const visit1 = new Visit(customer1, new Date(), 5000, 800); //อยากได้เเบบตั้งวันเองเเก้ตรง new Date เป็น วันเดือนปีได้เลย
 
-    const visit1 = new Visit(customer1, new Date(), 3000, 800);
+  console.log(customer1.toString());
+  console.log(visit1.toString());
 
-    console.log(customer1.toString());
-    console.log(visit1.toString());
-
-    const discountRate = DiscountRate.getServiceDiscountRate(customer1.getMemberType());
-    console.log(`Service discount rate: ${discountRate}`);
-
-
-
-}
+ const discountRate = DiscountRate.getServiceDiscountRate(
+    customer1.getMemberType()
+  );
+  console.log(`Service discount rate: ${discountRate}`);
+ 
+ 
+};
 main();
